@@ -58,7 +58,7 @@ public class Sanalaskuri {
         laskuri.add("kahvi");
         laskuri.add("kakku");
 
-        // System.out.println(laskuri.getEsiintymat());
+        System.out.println(laskuri.getEsiintymat());
         laskuri = new Sanalaskuri();
 
         String f = "sanat.txt";
@@ -74,9 +74,6 @@ public class Sanalaskuri {
             while(scanner.hasNext()){
                 sanat.add(scanner.next());
             }
-          
-
-            Pattern p = Pattern.compile("\\s");
             
             sanat.stream().forEach(laskuri::add);
           
