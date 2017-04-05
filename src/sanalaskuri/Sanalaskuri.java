@@ -64,9 +64,6 @@ public class Sanalaskuri {
         String f = "sanat.txt";
 
         try {
-            //Files.
-            Stream<String> stream = Files.lines(Paths.get(f));
-
             List<String> sanat = new ArrayList<>();
 
             Scanner scanner = new Scanner(new File(f));
@@ -82,7 +79,8 @@ public class Sanalaskuri {
         }
 
         System.out.println(laskuri.getEsiintymat());
-
+        
+        
     }
 
 }
