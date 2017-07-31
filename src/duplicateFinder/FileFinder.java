@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Antero Oikkonen
  */
-public class FileFinder implements Runnable {
+public class FileFinder {
 
     private String startDir;
     private HashMap<String, List<File>> duplicates = null;
@@ -101,19 +101,6 @@ public class FileFinder implements Runnable {
         this.duplicates = real;
         return real;
 
-    }
-
-    @Override
-    public void run() {
-        try {
-            synchronized (this) {
-                System.out.println("start -- resolveRealDuplicates");
-                resolveRealDuplicates(startDir);
-                System.out.println("end -- resolveRealDuplicates");
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(FileFinder.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
 }

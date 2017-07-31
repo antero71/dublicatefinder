@@ -2,4 +2,5 @@ build
 nbproject
 build.xml
 manifest.mf
+words.txt
 /dist/

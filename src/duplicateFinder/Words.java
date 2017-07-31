@@ -55,6 +55,6 @@ public class Words implements Comparable<Words> {
 
     @Override
     public String toString() {
-        return "["+word+", "+amount+"]";
+        return "[" + word + ", " + amount + "]";
     }
 }

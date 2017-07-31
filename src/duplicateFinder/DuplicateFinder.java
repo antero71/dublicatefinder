@@ -8,8 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author Antero Oikkonen
  */
-public class DuplicateFinder implements Runnable {
+public class DuplicateFinder {
 
     private String startDir;
     FileFinder finder = new FileFinder();
@@ -26,21 +25,12 @@ public class DuplicateFinder implements Runnable {
         this.startDir = startDir;
     }
 
-    public void start() {
-        finder.setStartDir(startDir);
-        ExecutorService taskList = Executors.newFixedThreadPool(10);
-        taskList.execute(this);
-        taskList.execute(finder);
-    }
-
     public HashMap<String, List<File>> findDuplicates(String startDirectory) {
 
         HashMap<String, List<File>> files = new HashMap<String, List<File>>();
 
         finder.setStartDir(startDirectory);
 
-        finder.run();
-        this.run();
         return files;
     }
 
@@ -50,41 +40,24 @@ public class DuplicateFinder implements Runnable {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        String startDir = "Demo.txt";
+        System.out.println("Give a directory where you want to find duplicate files:");
+
+        Scanner scanner = new Scanner(System.in);
+
+        String startDir = scanner.nextLine();
 
         DuplicateFinder dfinder = new DuplicateFinder();
         dfinder.setStartDir(startDir);
         dfinder.start();
-        long start = System.currentTimeMillis();
 
-        long end = System.currentTimeMillis();
-
-        System.out.println("Time consumed " + (end - start) / 1000 + " seconds");
-
-        //dfinder.run();
         //System.out.println("Files " + files);
     }
 
-    @Override
-    public void run() {
-        System.out.println("run()");
-        int count = 0;
+    private void start() {
         try {
-            synchronized (this) {
-
-                this.wait(1000 * 5);
-                count++;
-
-                System.out.println("--- seconds --- " + count * 5);
-
-            }
-        } catch (InterruptedException ex) {
+            printDuplicates(finder.resolveRealDuplicates(startDir));
+        } catch (IOException ex) {
             Logger.getLogger(DuplicateFinder.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if (finder.getDuplicates() != null) {
-            System.out.println("dublicates " + finder.getDuplicates());
-            printDuplicates(finder.getDuplicates());
-            writeFilelist(finder.getDuplicates());
         }
     }
 
@@ -115,5 +88,4 @@ public class DuplicateFinder implements Runnable {
         }
         //System.exit(0);
     }
-
 }
