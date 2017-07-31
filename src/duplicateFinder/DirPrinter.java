@@ -13,12 +13,11 @@ import java.util.stream.Stream;
 public class DirPrinter {
 
     public void printContent(String dir) throws IOException {
-        
-        try (Stream<Path> paths = Files.walk(Paths.get(dir))){
+
+        try (Stream<Path> paths = Files.walk(Paths.get(dir))) {
             paths.filter(Files::isRegularFile)
                     .forEach(System.out::println);
 
         }
     }
 }
-

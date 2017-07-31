@@ -35,7 +35,7 @@ public class FileFinderTest {
 
     @Test
     public void testPrintSuspectedDuplicates() throws Exception {
-        HashMap<String, List<File>> files = (HashMap)finder.getNamesAndLocations("/Users/anterooikkonen/dirtesti");
+        HashMap<String, List<File>> files = (HashMap)finder.getNamesAndLocations("dir_test");
 
         //System.out.println("files "+files);
         assertEquals("Wrong number of the files", 4, files.keySet().size());
@@ -44,7 +44,7 @@ public class FileFinderTest {
 
     @Test
     public void testRealDuplicates() throws Exception {
-        HashMap<String, List<File>> files = finder.resolveRealDuplicates("/Users/anterooikkonen/dirtesti");
+        HashMap<String, List<File>> files = finder.resolveRealDuplicates("dir_test");
 
          assertEquals("Wrong number of the files", 3, files.get("readme.txt").size());
 

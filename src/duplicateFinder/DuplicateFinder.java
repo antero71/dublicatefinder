@@ -51,7 +51,7 @@ public class DuplicateFinder implements Runnable {
         // TODO code application logic here
 
         String startDir = "Demo.txt";
-        
+
         DuplicateFinder dfinder = new DuplicateFinder();
         dfinder.setStartDir(startDir);
         dfinder.start();
