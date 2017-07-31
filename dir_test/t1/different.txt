@@ -1,0 +1,6 @@
+This is not duplicate file other, althouth 
+there is two files with same name, but its content is different.
+
+This file is located in the directory t1.
+
+This line is added only file which is located in the t1.
