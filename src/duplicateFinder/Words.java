@@ -1,50 +1,45 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package sanalaskuri;
+package duplicateFinder;
 
 /**
  *
  * @author Antero Oikkonen
  */
-public class Sanat implements Comparable<Sanat> {
+public class Words implements Comparable<Words> {
 
-    private String sana;
-    private int lukumaara;
+    private String word;
+    private int amount;
 
-    public Sanat(String sana, int lukumaara) {
-        this.sana = sana;
-        this.lukumaara = lukumaara;
+    public Words(String sana, int amount) {
+        this.word = sana;
+        this.amount = amount;
     }
 
-    public String getSana() {
-        return sana;
+    public String getWord() {
+        return word;
     }
 
-    public void setSana(String sana) {
-        this.sana = sana;
+    public void setWord(String word) {
+        this.word = word;
     }
 
-    public int getLukumaara() {
-        return lukumaara;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setLukumaara(int lukumaara) {
-        this.lukumaara = lukumaara;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
-    public void lisaaLukumaaraa() {
-        lukumaara += 1;
+    public void addOne() {
+        amount += 1;
     }
 
     @Override
-    public int compareTo(Sanat o) {
-        if (o.getLukumaara() > this.lukumaara) {
+    public int compareTo(Words o) {
+        if (o.getAmount() > this.amount) {
             return 1;
-        } else if (o.getLukumaara() == this.lukumaara) {
-            return sana.compareTo(o.getSana());
+        } else if (o.getAmount() == this.amount) {
+            return word.compareTo(o.getWord());
         } else {
             return -1;
         }
@@ -52,14 +47,14 @@ public class Sanat implements Comparable<Sanat> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Sanat) {
-            return sana.equals(((Sanat) obj).getSana());
+        if (obj instanceof Words) {
+            return word.equals(((Words) obj).getWord());
         }
         return false;
     }
 
     @Override
     public String toString() {
-        return "["+sana+", "+lukumaara+"]";
+        return "["+word+", "+amount+"]";
     }
 }
