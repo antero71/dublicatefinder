@@ -1,44 +1,47 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package sanalaskuri;
+package duplicateFinder;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Antero Oikkonen
  */
-public class Sanalaskuri {
+public class DuplicateFinder implements Runnable {
 
-    //private Hashtable<String,Integer> sanalista = new Hashtable<String,Integer>();
-    private List<Sanat> sanalista = new ArrayList();
+    private String startDir;
+    FileFinder finder = new FileFinder();
 
-    public void add(String sana) {
-        Sanat s = new Sanat(sana, 1);
-        int indeksi = 0;
-        if (sanalista.contains(s)) {
-            indeksi = sanalista.indexOf(s);
-            sanalista.get(indeksi).lisaaLukumaaraa();
-        } else {
-            sanalista.add(s);
-        }
+    public void setStartDir(String startDir) {
+        this.startDir = startDir;
     }
 
-    public List getEsiintymat() {
-        Collections.sort(sanalista, (s1, s2) -> s1.compareTo(s2));
-        return sanalista;
+    public void start() {
+        finder.setStartDir(startDir);
+        ExecutorService taskList = Executors.newFixedThreadPool(10);
+        taskList.execute(this);
+        taskList.execute(finder);
+    }
+
+    public HashMap<String, List<File>> findDuplicates(String startDirectory) {
+
+        HashMap<String, List<File>> files = new HashMap<String, List<File>>();
+
+        finder.setStartDir(startDirectory);
+
+        finder.run();
+        this.run();
+        return files;
     }
 
     /**
@@ -46,41 +49,71 @@ public class Sanalaskuri {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Sanalaskuri laskuri = new Sanalaskuri();
-        laskuri.add("pulla");
-        laskuri.add("kakku");
-        laskuri.add("pulla");
-        laskuri.add("leipa");
-        laskuri.add("pipari");
-        laskuri.add("pipari");
-        laskuri.add("pipari");
-        laskuri.add("pulla");
-        laskuri.add("kahvi");
-        laskuri.add("kakku");
 
-        System.out.println(laskuri.getEsiintymat());
-        laskuri = new Sanalaskuri();
+        String startDir = "Demo.txt";
+        
+        DuplicateFinder dfinder = new DuplicateFinder();
+        dfinder.setStartDir(startDir);
+        dfinder.start();
+        long start = System.currentTimeMillis();
 
-        String f = "sanat.txt";
+        long end = System.currentTimeMillis();
 
+        System.out.println("Time consumed " + (end - start) / 1000 + " seconds");
+
+        //dfinder.run();
+        //System.out.println("Files " + files);
+    }
+
+    @Override
+    public void run() {
+        System.out.println("run()");
+        int count = 0;
         try {
-            List<String> sanat = new ArrayList<>();
+            synchronized (this) {
 
-            Scanner scanner = new Scanner(new File(f));
+                this.wait(1000 * 5);
+                count++;
 
-            while(scanner.hasNext()){
-                sanat.add(scanner.next());
+                System.out.println("--- seconds --- " + count * 5);
+
             }
-            
-            sanat.stream().forEach(laskuri::add);
-          
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(DuplicateFinder.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if (finder.getDuplicates() != null) {
+            System.out.println("dublicates " + finder.getDuplicates());
+            printDuplicates(finder.getDuplicates());
+            writeFilelist(finder.getDuplicates());
+        }
+    }
 
-        System.out.println(laskuri.getEsiintymat());
-        
-        
+    public void printDuplicates(HashMap<String, List<File>> files) {
+        files.forEach((k, v) -> {
+            System.out.println("File : " + k);
+            v.stream().forEach(System.out::println);
+        });
+    }
+
+    public void writeFilelist(HashMap<String, List<File>> files) {
+        StringBuilder builder = new StringBuilder(files.size() * 10);
+        files.forEach((k, v) -> {
+            System.out.println("File : " + k);
+            builder.append(k);
+            builder.append("\n");
+            for (File dir : v) {
+                builder.append(dir);
+                builder.append("\n");
+            }
+        });
+        Path path = Paths.get("words.txt");
+        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+            writer.write(builder.toString());
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DuplicateFinder.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //System.exit(0);
     }
 
 }
